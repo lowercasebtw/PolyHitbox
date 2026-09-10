@@ -27,6 +27,7 @@ object HitboxRenderer {
 
     private const val DASH_STEP = 0.005
     private const val MIN_DASH = 0.03
+    private const val MAX_DASHES = 1024.0
 
     private const val VIEW_RAY_LENGTH = 2.0
 
@@ -332,8 +333,8 @@ object HitboxRenderer {
                 val dy = by - ay
                 val dz = bz - az
                 val total = sqrt(dx * dx + dy * dy + dz * dz)
-                if (total < 1.0e-6) return
-                val dashLength = max(config.dashFactor * DASH_STEP, MIN_DASH)
+                if (!total.isFinite() || total < 1.0e-6) return
+                val dashLength = max(max(config.dashFactor * DASH_STEP, MIN_DASH), total / MAX_DASHES)
                 val ux = dx / total
                 val uy = dy / total
                 val uz = dz / total
